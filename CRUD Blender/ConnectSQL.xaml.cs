@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 
 //
 using System.Data;
-using System.Windows;
 using System.Data.SqlClient;
 using System.Configuration;
 
@@ -25,22 +24,55 @@ namespace CRUD_Blender {
     public partial class ConnectSQL : Window {
         public ConnectSQL() {
             InitializeComponent();
+            GetModel();
+        }
+        private void ListViewItem_MouseEnter(object sender, MouseEventArgs e) {
+            // Set tooltip visibility
+
+            if (Tg_Btn.IsChecked == true) {
+                tt_home.Visibility = Visibility.Collapsed;
+                tt_contacts.Visibility = Visibility.Collapsed;
+                tt_messages.Visibility = Visibility.Collapsed;
+                tt_maps.Visibility = Visibility.Collapsed;
+                tt_settings.Visibility = Visibility.Collapsed;
+                tt_signout.Visibility = Visibility.Collapsed;
+            }
+            else {
+                tt_home.Visibility = Visibility.Visible;
+                tt_contacts.Visibility = Visibility.Visible;
+                tt_messages.Visibility = Visibility.Visible;
+                tt_maps.Visibility = Visibility.Visible;
+                tt_settings.Visibility = Visibility.Visible;
+                tt_signout.Visibility = Visibility.Visible;
+            }
         }
 
-        private void Windows_Loaded(object sender, RoutedEventArgs e) {
-            DbClass.openConnection();
-            DbClass.sql = "SELECT * FROM RawMasterComponents";
-            DbClass.cmd.CommandType = CommandType.Text;
-            DbClass.cmd.CommandText = DbClass.sql;
+        private void Tg_Btn_Unchecked(object sender, RoutedEventArgs e) {
+            img_bg.Opacity = 1;
+        }
 
-            DbClass.da = new SqlDataAdapter(DbClass.cmd);
-            DbClass.dt = new DataTable();
-            DbClass.da.Fill(DbClass.dt);
+        private void Tg_Btn_Checked(object sender, RoutedEventArgs e) {
+            img_bg.Opacity = 0.3;
+        }
 
-            FelixDataGrid.ItemsSource = DbClass.dt.TableName;
-            HeadingGrid.ItemsSource = DbClass.dt.DefaultView;
+        private void BG_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+            Tg_Btn.IsChecked = false;
+        }
 
-            DbClass.closeConnection();
+        private void CloseBtn_Click(object sender, RoutedEventArgs e) {
+            Close();
+        }
+        private void GetModel() {
+            string ConString = ConfigurationManager.ConnectionStrings["BlenderDB"].ConnectionString;
+            string CmdString = string.Empty;
+            using (SqlConnection con = new SqlConnection(ConString)) {
+                CmdString = "dbo.GetAllModels";
+                SqlCommand cmd = new SqlCommand(CmdString, con);
+                SqlDataAdapter sda = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable("dbo.CleanModel");
+                sda.Fill(dt);
+                FelixDataGrid.ItemsSource = dt.DefaultView;
+            }
         }
     }
 }
