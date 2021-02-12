@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:CRUD_Blender"
              StartupUri="ConnectSQL.xaml">
     <Application.Resources>
-         
+
     </Application.Resources>
 </Application>

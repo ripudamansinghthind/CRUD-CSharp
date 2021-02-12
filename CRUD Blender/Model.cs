@@ -33,5 +33,11 @@ namespace CRUD_Blender {
                 return $"{ID}                   {Name}                 {UserName}                   {Created}";
             }
         }
+
+        public string deletetrialgetter {
+            get {
+                return $"{ID}";
+            }
+        }
     }
 }
